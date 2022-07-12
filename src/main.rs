@@ -13,15 +13,14 @@ fn main() {
                 println!("send message failure.")
             }
         }
-
-        let recieved = rx.recv();
-        match recieved {
-            Ok(message) => {
-                println!("{}", message);
-            }
-            Err(_) => {
-                println!("message recieved failure.");
-            }
-        }
     });
+    let recieved = rx.recv();
+    match recieved {
+        Ok(message) => {
+            println!("{}", message);
+        }
+        Err(_) => {
+            println!("message recieved failure.");
+        }
+    }
 }

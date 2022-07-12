@@ -1,27 +1,27 @@
+use std::sync::mpsc;
 use std::thread;
-use std::time::Duration;
-
-fn dispach_more() {
-    thread::spawn(|| {
-        for i in 1..5 {
-            println!("hello from more thread {}", i);
-        }
-    })
-    .join()
-    .unwrap();
-}
-
-fn dispach() {
-    thread::spawn(|| {
-        for i in 1..10 {
-            println!("hello from thread {}", i);
-            dispach_more();
-        }
-    })
-    .join()
-    .unwrap();
-}
 
 fn main() {
-    dispach();
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        let res = tx.send(val);
+        match res {
+            Ok(_) => {}
+            Err(_) => {
+                println!("send message failure.")
+            }
+        }
+
+        let recieved = rx.recv();
+        match recieved {
+            Ok(message) => {
+                println!("{}", message);
+            }
+            Err(_) => {
+                println!("message recieved failure.");
+            }
+        }
+    });
 }

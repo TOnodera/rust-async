@@ -6,27 +6,19 @@ fn main() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-        Duration::from_secs(5);
-        let val = String::from("hi");
-        let res = tx.send(val);
-        match res {
-            Ok(_) => {}
-            Err(_) => {
-                println!("send message failure.")
-            }
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(2));
         }
     });
 
-    loop {
-        let recieved = rx.try_recv();
-        match recieved {
-            Ok(message) => {
-                println!("{}", message);
-                break;
-            }
-            Err(_) => {
-                println!("please wait for a seconds...");
-            }
-        }
+    for received in rx {
+        println!("Got: {}", received);
     }
 }
